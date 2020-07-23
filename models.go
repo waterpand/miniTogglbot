@@ -10,6 +10,7 @@ type Update struct {
 type Message struct {
 	Chat Chat   `json:"chat"`
 	Text string `json:"text"`
+	Date int    `json:"date"`
 }
 
 // Chat : дальнейшее раскрытие структуры

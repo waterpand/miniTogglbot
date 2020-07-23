@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -24,6 +25,16 @@ func main() {
 		}
 
 		for _, update := range updates {
+
+			if strings.HasPrefix(update.Message.Text, "$") {
+
+				if strings.Contains((strings.ToLower(update.Message.Text)), "выход") || strings.Contains((strings.ToLower(update.Message.Text)), "exit") {
+					update.Message.Text = strings.ToLower(update.Message.Text) + "\nВремя учтено"
+				} else {
+					update.Message.Text = update.Message.Text + "\nВне учёта"
+				}
+			}
+
 			err = respond(botURL, update)
 			offset = update.UpdateID + 1
 		}
@@ -56,10 +67,9 @@ func getUpdates(botURL string, offset int) ([]Update, error) {
 // ответ на обновления
 func respond(botURL string, update Update) error {
 	var botMessage BotMessage
-	T := time.Now()
-	Tm := time.Unix(int64(update.Message.Date), 0)
+	T := time.Unix(int64(update.Message.Date), 0)
 	botMessage.ChatID = update.Message.Chat.ChatID
-	botMessage.Text = T.Format("02 - 01 - 2006") + "\n" + update.Message.Text + "\n" + T.Format("15:04:05") + "\n" + Tm.Format("02 - 01 - 2006  15:04:05")
+	botMessage.Text = T.Format("02 - 01 - 2006") + "\n" + update.Message.Text + "\n" + T.Format("15:04:05")
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
 		return err

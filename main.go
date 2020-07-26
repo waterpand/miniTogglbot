@@ -26,10 +26,12 @@ func main() {
 
 		for _, update := range updates {
 
-			if strings.HasPrefix(update.Message.Text, "$") {
+			if strings.HasPrefix(update.Message.Text, "%") {
 
 				if strings.Contains((strings.ToLower(update.Message.Text)), "выход") || strings.Contains((strings.ToLower(update.Message.Text)), "exit") {
-					update.Message.Text = strings.ToLower(update.Message.Text) + "\nВремя учтено"
+					hours, minutes := getCheck(update.Message.Date)
+					update.Message.Text = "Время учтено\nПереработка за сегодня: " + strconv.Itoa(hours) + " час, " + strconv.Itoa(minutes) + " минут"
+					fmt.Print("Переработка за сегодня составляет: ", hours, ":", minutes, "\n")
 				} else {
 					update.Message.Text = update.Message.Text + "\nВне учёта"
 				}
@@ -80,4 +82,48 @@ func respond(botURL string, update Update) error {
 		return err
 	}
 	return nil
+
+}
+
+// учет времени переработки
+func getCheck(overTime int) (int, int) {
+	var tHourRegime, tMinuteRegime int
+	t := time.Unix(int64(overTime), 0)
+
+	switch t.Format("Mon") {
+	case "Sun": // это для проверки при разработке
+		tHourRegime = 12
+		tMinuteRegime = 7
+	case "Sut":
+		tHourRegime = 7
+		tMinuteRegime = 5
+	case "Fri":
+		tHourRegime = 14
+		tMinuteRegime = 50
+	default:
+		tHourRegime = 15
+		tMinuteRegime = 50
+	}
+
+	tHourExit, err := strconv.Atoi(t.Format("15"))
+	if err != nil {
+		fmt.Println(err)
+	}
+	tMinuteExit, err := strconv.Atoi(t.Format("04"))
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if tMinuteExit < tMinuteRegime && tHourExit <= tHourRegime {
+		return 0, 0
+	}
+	if tMinuteExit < tMinuteRegime && tHourExit > tHourRegime {
+		tHourExit = tHourExit - 1
+		tMinuteExit = tMinuteExit + 60
+	}
+
+	tOverHours := tHourExit - tHourRegime
+	tOverMinutes := tMinuteExit - tMinuteRegime
+
+	return tOverHours, tOverMinutes
 }

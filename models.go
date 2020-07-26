@@ -25,6 +25,23 @@ type RestResponse struct {
 
 // BotMessage : посылаем сообщение ботом
 type BotMessage struct {
-	ChatID int    `json:"chat_id"`
-	Text   string `json:"text"`
+	ChatID int                 `json:"chat_id"`
+	Text   string              `json:"text"`
+	Button ReplyKeyboardMarkup `json:"reply_markup"`
+}
+
+// ReplyKeyboardMarkup : структура для кнопки
+type ReplyKeyboardMarkup struct {
+	Keyboard [1][1]KeyboardButton `json:"keyboard"`
+}
+
+// KeyboardButton : текст кнопки
+type KeyboardButton struct {
+	Text string `json:"text"`
+}
+
+//BotButton : Попытка создать кнопку
+type BotButton struct {
+	Text         string `json:"text"`
+	CallbackData string `json:"callback_data"`
 }

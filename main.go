@@ -68,10 +68,14 @@ func getUpdates(botURL string, offset int) ([]Update, error) {
 
 // ответ на обновления
 func respond(botURL string, update Update) error {
-	var botMessage BotMessage
+	var (
+		botMessage BotMessage
+	)
 	T := time.Unix(int64(update.Message.Date), 0)
 	botMessage.ChatID = update.Message.Chat.ChatID
 	botMessage.Text = T.Format("02 - 01 - 2006") + "\n" + update.Message.Text + "\n" + T.Format("15:04:05")
+	botMessage.Button.Keyboard[0][0].Text = "%Выход"
+
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
 		return err

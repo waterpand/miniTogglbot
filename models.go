@@ -32,7 +32,7 @@ type BotMessage struct {
 
 // ReplyKeyboardMarkup : структура для кнопки
 type ReplyKeyboardMarkup struct {
-	Keyboard [1][1]KeyboardButton `json:"keyboard"`
+	Keyboard [1][2]KeyboardButton `json:"keyboard"`
 }
 
 // KeyboardButton : текст кнопки

@@ -73,6 +73,7 @@ func respond(botURL string, update Update) error {
 		botMessage BotMessage
 	)
 	T := time.Unix(int64(update.Message.Date), 0)
+	T = T.Add((time.Hour * 3)) // Если бот запущен на Heroku - добавляет три часа к локальному времени
 	botMessage.ChatID = update.Message.Chat.ChatID
 	botMessage.Text = T.Format("02 - 01 - 2006") + "\n" + update.Message.Text + "\n" + T.Format("15:04:05")
 	botMessage.Button.Keyboard[0][0].Text = "%Выход"
@@ -94,12 +95,14 @@ func respond(botURL string, update Update) error {
 func getCheck(overTime int) (int, int) {
 	var tHourRegime, tMinuteRegime int
 	t := time.Unix(int64(overTime), 0)
+	t = t.Add((time.Hour * 3)) // Если бот запущен на Heroku - добавляет три часа к локальному времени
+	fmt.Println(t)
 
 	switch t.Format("Mon") {
 	case "Sun": // это для проверки при разработке
-		tHourRegime = 12
-		tMinuteRegime = 7
-	case "Sut":
+		tHourRegime = 7
+		tMinuteRegime = 5
+	case "Sat":
 		tHourRegime = 7
 		tMinuteRegime = 5
 	case "Fri":

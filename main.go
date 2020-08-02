@@ -78,6 +78,7 @@ func respond(botURL string, update Update) error {
 	botMessage.Text = T.Format("02 - 01 - 2006") + "\n" + update.Message.Text + "\n" + T.Format("15:04:05")
 	botMessage.Button.Keyboard[0][0].Text = "%Выход"
 	botMessage.Button.Keyboard[0][1].Text = "%Тест"
+	botMessage.Button.SizeKeyboard = true // этот параметр изменяет размер кнопки в боте под текст
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
 		return err
